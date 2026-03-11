@@ -28,13 +28,15 @@ const Navbar = () => {
                                 <Link to="/history" className="text-sm font-semibold text-gray-500 hover:text-black">
                                     History
                                 </Link>
-                                <div className="flex items-center space-x-2 text-gray-700 font-medium bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
-                                    <User size={18} />
-                                    <span>{user?.name}</span>
-                                    <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full uppercase ml-2">
-                                        {user?.role}
-                                    </span>
-                                </div>
+                                <Link to="/profile">
+                                    <div className="flex items-center space-x-2 text-gray-700 font-medium bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors">
+                                        <User size={18} />
+                                        <span>{user?.name}</span>
+                                        <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full uppercase ml-2">
+                                            {user?.role}
+                                        </span>
+                                    </div>
+                                </Link>
                                 <button
                                     onClick={handleLogout}
                                     className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors flex items-center"

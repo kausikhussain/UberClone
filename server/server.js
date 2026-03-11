@@ -30,11 +30,10 @@ app.use('/api/payment', paymentRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://admin:password@localhost:27017/rideflow?authSource=admin', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
 })
     .then(() => console.log('MongoDB Initialized Successfully'))
-    .catch((err) => console.log('MongoDB Connection Failed:', err.message));
+    .catch((err) => console.log('MongoDB Connection Failed (Is it running?):', err.message));
 
 // Sockets
 const io = new Server(server, {

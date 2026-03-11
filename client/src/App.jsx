@@ -8,6 +8,7 @@ import Signup from './pages/Signup';
 import RiderDashboard from './pages/RiderDashboard';
 import DriverDashboard from './pages/DriverDashboard';
 import RideHistory from './pages/RideHistory';
+import Profile from './pages/Profile';
 
 // Custom PrivateRoute component
 const PrivateRoute = ({ children, roleRequired }) => {
@@ -66,6 +67,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <RideHistory />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
                 </PrivateRoute>
               }
             />
