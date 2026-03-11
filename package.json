@@ -1,0 +1,12 @@
+{
+    "name": "rideflow-root",
+    "version": "1.0.0",
+    "description": "Root package to manage frontend and backend concurrently",
+    "scripts": {
+        "postinstall": "npm install --prefix server && npm install --prefix client",
+        "dev": "npx concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
+    },
+    "dependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
