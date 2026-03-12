@@ -5,7 +5,7 @@ import Map from '../components/Map';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import socket from '../services/socket';
-import { MapPin, Navigation, Clock } from 'lucide-react';
+import { MapPin, Navigation, Clock, Star } from 'lucide-react';
 
 const RiderDashboard = () => {
     const { user } = useAuthStore();
@@ -13,6 +13,9 @@ const RiderDashboard = () => {
 
     const [pickup, setPickup] = useState('');
     const [destination, setDestination] = useState('');
+    const [rating, setRating] = useState(0);
+    const [hoverRating, setHoverRating] = useState(0);
+    const [submittedRating, setSubmittedRating] = useState(false);
 
     // Mock coordinates for demo
     const mockPickupCoords = [-74.006, 40.7128];
@@ -131,9 +134,56 @@ const RiderDashboard = () => {
                             </div>
 
                             {currentRide.status === 'COMPLETED' && (
-                                <Button onClick={() => setCurrentRide(null)} className="mt-8">
-                                    Book Another Ride
-                                </Button>
+                                <div className="mt-8">
+                                    {!submittedRating ? (
+                                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-center mb-6">
+                                            <h4 className="font-bold text-gray-900 mb-2">Rate your driver</h4>
+                                            <p className="text-sm text-gray-500 mb-4">How was your trip with {currentRide.driverId?.userId?.name}?</p>
+                                            <div className="flex justify-center space-x-2 mb-6">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <button
+                                                        key={star}
+                                                        type="button"
+                                                        onClick={() => setRating(star)}
+                                                        onMouseEnter={() => setHoverRating(star)}
+                                                        onMouseLeave={() => setHoverRating(0)}
+                                                        className="focus:outline-none transition-transform hover:scale-110"
+                                                    >
+                                                        <Star
+                                                            size={32}
+                                                            className={`${
+                                                                (hoverRating || rating) >= star
+                                                                    ? 'text-yellow-400 fill-current'
+                                                                    : 'text-gray-300'
+                                                            } transition-colors duration-200`}
+                                                        />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <Button 
+                                                onClick={() => setSubmittedRating(true)} 
+                                                disabled={!rating}
+                                                className="w-full"
+                                            >
+                                                Submit Feedback
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-green-50 text-green-700 p-4 rounded-xl text-center font-medium mb-6">
+                                            Thank you for your feedback! ⭐
+                                        </div>
+                                    )}
+
+                                    <Button onClick={() => {
+                                        setCurrentRide(null);
+                                        setRating(0);
+                                        setSubmittedRating(false);
+                                        setPickup('');
+                                        setDestination('');
+                                    }} className="w-full bg-gray-900">
+                                        Book Another Ride
+                                    </Button>
+                                </div>
                             )}
                         </div>
                     )}
