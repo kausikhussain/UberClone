@@ -9,6 +9,7 @@ import RiderDashboard from './pages/RiderDashboard';
 import DriverDashboard from './pages/DriverDashboard';
 import RideHistory from './pages/RideHistory';
 import Profile from './pages/Profile';
+import Toast from './components/Toast';
 
 // Custom PrivateRoute component
 const PrivateRoute = ({ children, roleRequired }) => {
@@ -81,6 +82,7 @@ function App() {
             />
           </Routes>
         </main>
+        <Toast />
       </div>
     </Router>
   );
