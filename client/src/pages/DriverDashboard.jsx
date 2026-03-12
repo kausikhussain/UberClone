@@ -5,7 +5,7 @@ import socket from '../services/socket';
 import api from '../services/api';
 import Map from '../components/Map';
 import Button from '../components/Button';
-import { ToggleRight, ToggleLeft, User, MapPin, CheckCircle, Navigation } from 'lucide-react';
+import { ToggleRight, ToggleLeft, User, MapPin, CheckCircle, Navigation, TrendingUp, Clock, Calendar } from 'lucide-react';
 
 const DriverDashboard = () => {
     const { user } = useAuthStore();
@@ -13,6 +13,7 @@ const DriverDashboard = () => {
 
     const [isAvailable, setIsAvailable] = useState(user?.driverProfile?.isAvailable || false);
     const [incomingRequest, setIncomingRequest] = useState(null);
+    const [stats, setStats] = useState({ todayEarnings: 1250, trips: 8, onlineHours: 4.5 });
 
     useEffect(() => {
         // Current location mock toggle (every 5 secs)
@@ -197,11 +198,40 @@ const DriverDashboard = () => {
                     )}
 
                     {!incomingRequest && !currentRide && (
-                        <div className="flex flex-col items-center justify-center h-64 text-center opacity-50">
-                            <MapPin size={48} className="text-gray-300 mb-4" />
-                            <p className="text-xl font-semibold text-gray-400">
-                                {isAvailable ? 'Finding nearby rides...' : 'You are currently offline'}
-                            </p>
+                        <div className="space-y-6">
+                            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 text-white shadow-lg">
+                                <h3 className="text-gray-400 font-medium mb-1">Today's Earnings</h3>
+                                <div className="flex items-end justify-between">
+                                    <span className="text-4xl font-bold">₹{stats.todayEarnings}</span>
+                                    <span className="flex items-center text-green-400 text-sm font-semibold bg-green-400/10 px-2 py-1 rounded-lg">
+                                        <TrendingUp size={16} className="mr-1" /> +12%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-white border rounded-2xl p-5 shadow-sm text-center">
+                                    <div className="bg-blue-50 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 text-blue-600">
+                                        <CheckCircle size={20} />
+                                    </div>
+                                    <p className="text-xl font-bold text-gray-900">{stats.trips}</p>
+                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Trips Today</p>
+                                </div>
+                                <div className="bg-white border rounded-2xl p-5 shadow-sm text-center">
+                                    <div className="bg-purple-50 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 text-purple-600">
+                                        <Clock size={20} />
+                                    </div>
+                                    <p className="text-xl font-bold text-gray-900">{stats.onlineHours}h</p>
+                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Online</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center justify-center h-48 text-center opacity-60 mt-4 border-2 border-dashed border-gray-200 rounded-2xl">
+                                <MapPin size={32} className="text-gray-300 mb-3" />
+                                <p className="text-lg font-semibold text-gray-500">
+                                    {isAvailable ? 'Finding nearby rides...' : 'Go online to start earning'}
+                                </p>
+                            </div>
                         </div>
                     )}
                 </div>
