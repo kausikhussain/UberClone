@@ -5,7 +5,7 @@ import Map from '../components/Map';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import socket from '../services/socket';
-import { MapPin, Navigation, Clock, Star, Zap, Tag } from 'lucide-react';
+import { MapPin, Navigation, Clock, Star, Zap, Tag, Share2 } from 'lucide-react';
 import useToastStore from '../store/useToastStore';
 
 const RiderDashboard = () => {
@@ -184,6 +184,23 @@ const RiderDashboard = () => {
                                     <span className="text-gray-600 font-medium">Fare</span>
                                     <span className="font-bold text-xl">₹{currentRide.fare}</span>
                                 </div>
+                            </div>
+
+                            <div className="flex justify-between items-center bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                                <div>
+                                    <p className="text-xs text-blue-800 font-semibold uppercase tracking-wider mb-0.5">Live Tracking</p>
+                                    <p className="text-sm font-medium text-blue-900">Share your ride status with friends</p>
+                                </div>
+                                <Button 
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(`https://rideflow.app/track/${currentRide._id}`);
+                                        addToast('Tracking link copied to clipboard!', 'success');
+                                    }}
+                                    variant="outline"
+                                    className="w-auto h-9 px-3 bg-white hover:bg-blue-50 text-blue-700 border-blue-200 shadow-sm text-sm"
+                                >
+                                    <Share2 size={14} className="mr-1.5" /> Share
+                                </Button>
                             </div>
 
                             <div className="space-y-4">
