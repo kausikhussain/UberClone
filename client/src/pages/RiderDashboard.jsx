@@ -5,7 +5,7 @@ import Map from '../components/Map';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import socket from '../services/socket';
-import { MapPin, Navigation, Clock, Star } from 'lucide-react';
+import { MapPin, Navigation, Clock, Star, Zap } from 'lucide-react';
 
 const RiderDashboard = () => {
     const { user } = useAuthStore();
@@ -16,6 +16,9 @@ const RiderDashboard = () => {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [submittedRating, setSubmittedRating] = useState(false);
+    
+    // Simulate high demand in the area randomly when opening the app
+    const [isSurgePricing] = useState(Math.random() > 0.4); // 60% chance of surge
 
     // Mock coordinates for demo
     const mockPickupCoords = [-74.006, 40.7128];
@@ -48,8 +51,9 @@ const RiderDashboard = () => {
         const pickupLocation = { address: pickup, coordinates: mockPickupCoords };
         const destLocation = { address: destination, coordinates: mockDestCoords };
 
-        // Request via REST API, which will broadcast via socket
-        const ride = await requestRide(pickupLocation, destLocation, 5.5);
+        // Request via REST API, which will broadcast via socket. Increase price by 1.5x if surge is active
+        const baseMultiplier = isSurgePricing ? 1.5 : 1;
+        const ride = await requestRide(pickupLocation, destLocation, 5.5 * baseMultiplier);
 
         // Wait for driver to accept
         socket.emit('request_ride', ride);
@@ -90,13 +94,29 @@ const RiderDashboard = () => {
                             </div>
 
                             {pickup && destination && (
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 mb-6">
+                                <div className={`p-4 rounded-xl border mb-6 transition-colors ${isSurgePricing ? 'bg-orange-50/50 border-orange-200' : 'bg-gray-50 border-gray-100'}`}>
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="font-semibold text-gray-800 flex items-center"><Navigation size={18} className="mr-2 text-blue-600" /> Estimate</span>
-                                        <span className="text-xl font-bold">₹{Math.round(50 + (5.5 * 15))}</span>
+                                        <span className="font-semibold text-gray-800 flex items-center">
+                                            <Navigation size={18} className="mr-2 text-blue-600" /> Estimate
+                                        </span>
+                                        <div className="text-right">
+                                            {isSurgePricing && (
+                                                <span className="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded-full mr-2 line-through opacity-70">
+                                                    ₹{Math.round(50 + (5.5 * 15))}
+                                                </span>
+                                            )}
+                                            <span className="text-xl font-bold">₹{Math.round(50 + (5.5 * 15 * (isSurgePricing ? 1.5 : 1)))}</span>
+                                        </div>
                                     </div>
-                                    <div className="text-sm text-gray-500 flex items-center">
-                                        <Clock size={14} className="mr-1" /> ~15 min ride • 5.5 km
+                                    <div className="text-sm text-gray-500 flex flex-col space-y-2 mt-2">
+                                        <div className="flex items-center">
+                                            <Clock size={14} className="mr-1" /> ~15 min ride • 5.5 km
+                                        </div>
+                                        {isSurgePricing && (
+                                            <div className="flex items-center text-orange-600 font-medium text-xs bg-orange-100/50 p-1.5 rounded-md">
+                                                <Zap size={12} className="mr-1 fill-current" /> High demand. Fares are slightly higher to ensure reliability.
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}
