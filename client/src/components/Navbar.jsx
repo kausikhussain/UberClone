@@ -22,7 +22,10 @@ const Navbar = () => {
                         </span>
                     </div>
 
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-6">
+                        <Link to="/help" className="text-sm font-semibold text-gray-500 hover:text-black">
+                            Help
+                        </Link>
                         {isAuthenticated ? (
                             <>
                                 <Link to="/history" className="text-sm font-semibold text-gray-500 hover:text-black">

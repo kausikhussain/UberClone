@@ -9,6 +9,7 @@ import RiderDashboard from './pages/RiderDashboard';
 import DriverDashboard from './pages/DriverDashboard';
 import RideHistory from './pages/RideHistory';
 import Profile from './pages/Profile';
+import Help from './pages/Help';
 import Toast from './components/Toast';
 import Footer from './components/Footer';
 
@@ -81,6 +82,8 @@ function App() {
                 </PrivateRoute>
               }
             />
+
+            <Route path="/help" element={<Help />} />
           </Routes>
         </main>
         <Footer />
