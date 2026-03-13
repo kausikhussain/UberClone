@@ -5,11 +5,13 @@ import Map from '../components/Map';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import socket from '../services/socket';
-import { MapPin, Navigation, Clock, Star, Zap } from 'lucide-react';
+import { MapPin, Navigation, Clock, Star, Zap, Tag } from 'lucide-react';
+import useToastStore from '../store/useToastStore';
 
 const RiderDashboard = () => {
     const { user } = useAuthStore();
     const { requestRide, currentRide, driverLocation, setDriverLocation, setCurrentRide, isSearching } = useRideStore();
+    const { addToast } = useToastStore();
 
     const [pickup, setPickup] = useState('');
     const [destination, setDestination] = useState('');
@@ -19,6 +21,10 @@ const RiderDashboard = () => {
     
     // Simulate high demand in the area randomly when opening the app
     const [isSurgePricing] = useState(Math.random() > 0.4); // 60% chance of surge
+    
+    // Promo Code State
+    const [promoCode, setPromoCode] = useState('');
+    const [discountApplied, setDiscountApplied] = useState(0); // Between 0 and 1 (e.g. 0.2 for 20%)
 
     // Mock coordinates for demo
     const mockPickupCoords = [-74.006, 40.7128];
@@ -53,7 +59,8 @@ const RiderDashboard = () => {
 
         // Request via REST API, which will broadcast via socket. Increase price by 1.5x if surge is active
         const baseMultiplier = isSurgePricing ? 1.5 : 1;
-        const ride = await requestRide(pickupLocation, destLocation, 5.5 * baseMultiplier);
+        const discountMultiplier = 1 - discountApplied;
+        const ride = await requestRide(pickupLocation, destLocation, 5.5 * baseMultiplier * discountMultiplier);
 
         // Wait for driver to accept
         socket.emit('request_ride', ride);
@@ -88,10 +95,46 @@ const RiderDashboard = () => {
                                     value={destination}
                                     onChange={(e) => setDestination(e.target.value)}
                                     placeholder="Destination"
-                                    className="pl-10 mb-6 bg-gray-50 border-transparent focus:bg-white"
+                                    className="pl-10 mb-4 bg-gray-50 border-transparent focus:bg-white"
                                     required
                                 />
                             </div>
+
+                            {pickup && destination && !currentRide && (
+                                <div className="flex space-x-2 mb-6">
+                                    <div className="relative flex-1">
+                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                            <Tag size={16} />
+                                        </div>
+                                        <Input
+                                            value={promoCode}
+                                            onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                            placeholder="Promo Code (Optional)"
+                                            className="pl-10 !mb-0 text-sm bg-gray-50 uppercase"
+                                            disabled={discountApplied > 0}
+                                        />
+                                    </div>
+                                    <Button 
+                                        type="button" 
+                                        variant={discountApplied > 0 ? "outline" : "primary"}
+                                        onClick={() => {
+                                            if (discountApplied > 0) {
+                                                setDiscountApplied(0);
+                                                setPromoCode('');
+                                                addToast('Promo code removed', 'info');
+                                            } else if (promoCode === 'RIDE50') {
+                                                setDiscountApplied(0.5);
+                                                addToast('50% Off Applied!', 'success');
+                                            } else if (promoCode) {
+                                                addToast('Invalid Promo Code', 'error');
+                                            }
+                                        }}
+                                        className="w-auto px-4 h-[42px] mt-1 text-sm font-semibold"
+                                    >
+                                        {discountApplied > 0 ? 'Remove' : 'Apply'}
+                                    </Button>
+                                </div>
+                            )}
 
                             {pickup && destination && (
                                 <div className={`p-4 rounded-xl border mb-6 transition-colors ${isSurgePricing ? 'bg-orange-50/50 border-orange-200' : 'bg-gray-50 border-gray-100'}`}>
@@ -105,7 +148,14 @@ const RiderDashboard = () => {
                                                     ₹{Math.round(50 + (5.5 * 15))}
                                                 </span>
                                             )}
-                                            <span className="text-xl font-bold">₹{Math.round(50 + (5.5 * 15 * (isSurgePricing ? 1.5 : 1)))}</span>
+                                            {discountApplied > 0 && (
+                                                <span className="text-xs text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-full mr-2">
+                                                    -{discountApplied * 100}% OFF
+                                                </span>
+                                            )}
+                                            <span className="text-xl font-bold">
+                                                ₹{Math.round((50 + (5.5 * 15 * (isSurgePricing ? 1.5 : 1))) * (1 - discountApplied))}
+                                            </span>
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-500 flex flex-col space-y-2 mt-2">
