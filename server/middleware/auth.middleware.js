@@ -11,7 +11,13 @@ const protect = async (req, res, next) => {
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretjwtkey');
 
-            // We can attach the userId to the request
+            // Strictly check if user still exists in DB
+            const User = require('../models/User.model');
+            const currentUser = await User.findById(decoded.id);
+            if (!currentUser) {
+                return res.status(401).json({ message: 'User belonging to this token no longer exists' });
+            }
+
             req.user = { id: decoded.id, role: decoded.role };
             next();
         } catch (error) {
