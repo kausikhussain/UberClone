@@ -1,4 +1,6 @@
-# RideFlow - Real-Time Ride Sharing Platform
+# RideFlow - Real-Time Ride Sharing App
+
+> **Zero-Config Developer Setup**: RideFlow uses `mongodb-memory-server` out of the box! If you do not have Docker or a local MongoDB database running, the Node server will automatically detect it and instantly spin up a temporary, native in-memory database! You literally just need to type `npm run dev` to get the entire full-stack app running locally without configuring anything!
 
 RideFlow is a full-stack, real-time ride-sharing application built using the MERN stack (MongoDB, Express, React, Node.js) with Socket.io for live driver tracking and Mapbox for mapping visualization.
 
