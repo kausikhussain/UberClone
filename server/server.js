@@ -29,11 +29,23 @@ app.use('/api/driver', driverRoutes);
 app.use('/api/payment', paymentRoutes);
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://admin:password@localhost:27017/rideflow?authSource=admin', {
-    serverSelectionTimeoutMS: 5000,
-})
-    .then(() => console.log('MongoDB Initialized Successfully'))
-    .catch((err) => console.log('MongoDB Connection Failed (Is it running?):', err.message));
+const connectDB = async () => {
+    try {
+        let uri = process.env.MONGO_URI;
+        if (!uri || uri.includes('localhost:27017')) {
+            console.log('Notice: Starting In-Memory MongoDB for seamless local testing...');
+            const { MongoMemoryServer } = require('mongodb-memory-server');
+            const mongoServer = await MongoMemoryServer.create();
+            uri = mongoServer.getUri();
+        }
+        await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+        console.log('MongoDB Initialized Successfully');
+    } catch (err) {
+        console.log('MongoDB Connection Failed:', err.message);
+    }
+};
+
+connectDB();
 
 // Sockets
 const io = new Server(server, {
