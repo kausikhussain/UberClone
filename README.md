@@ -4,17 +4,37 @@
 
 RideFlow is a full-stack, real-time ride-sharing application built using the MERN stack (MongoDB, Express, React, Node.js) with Socket.io for live driver tracking and Mapbox for mapping visualization.
 
-## Technologies Used
-- **Frontend**: React (Vite), Zustand, TailwindCSS v4, Mapbox GL JS, Socket.io-client, Axios, Lucide React
-- **Backend**: Node.js, Express, Socket.io, MongoDB, Mongoose, JWT, bcrypt
-- **Deployment**: Local Docker Compose (MongoDB) + Node/Vite
+## 🚀 Key Features
 
-## Getting Started
+- **Live Driver Tracking**: Stay updated with real-time driver locations on a high-fidelity Mapbox interface.
+- **Instant Matching Engine**: Sophisticated backend logic to connect riders with the nearest available drivers.
+- **Glassmorphic UI**: A premium, modern look and feel built with Tailwind CSS v4 and Framer Motion.
+- **In-Memory Database Ready**: Start developing immediately without a complex local database setup.
+- **Smart Fare Estimator**: Dynamic pricing based on distance and estimated travel time.
+
+## 🛠️ Technologies Used
+
+- **Frontend**: React (Vite), Zustand, TailwindCSS v4, Mapbox GL JS, Socket.io-client, Axios, Lucide React
+- **Backend**: Node.js, Express, Socket.io, MongoDB (Mongoose), JWT, bcrypt
+- **DevOps**: Docker Compose, MongoDB Memory Server for seamless local development.
+
+## 📐 Project Architecture
+
+```mermaid
+graph TD
+    A[Client - React/Vite] -->|HTTP/REST| B[Backend - Express/Node.js]
+    A <-->|WebSockets| C[Socket.io Server]
+    B -->|Mongoose| D[MongoDB / In-Memory DB]
+    C <-->|Shared State| B
+    B -->|Auth| E[JWT / bcrypt]
+```
+
+## 🏁 Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+)
-- Local MongoDB or Docker installed
-- Mapbox API Token
+- Mapbox API Token (for the map component)
 
 ### Setup Instructions
 
@@ -22,38 +42,25 @@ RideFlow is a full-stack, real-time ride-sharing application built using the MER
    - Copy `server/.env.example` to `server/.env` and update variables.
    - Copy `client/.env.example` to `client/.env` and insert your Mapbox token.
 
-2. **Starting the Database**
+2. **Starting the Application**
    ```bash
-   cd docker
-   docker-compose up -d
+   # In the root directory (using the zero-config setup)
+   cd server && npm install && npm run dev
+   cd ../client && npm install && npm run dev
    ```
 
-3. **Starting the Backend Server**
-   ```bash
-   cd server
-   npm install
-   npm run start
-   # Server will run on http://localhost:5000
-   ```
+## 🔐 Application Security & Auth
 
-4. **Starting the Frontend Client**
-   ```bash
-   cd client
-   npm install
-   npm run dev
-   # Client will run on http://localhost:5173
-   ```
+- **JWT Authentication**: Secure stateless authentication for all API routes.
+- **Role-Based Access**: Specialized dashboards for both Riders and Drivers.
+- **Payload Encryption**: All sensitive user data is hashed using bcrypt.
 
-## Application Features Overview
-- **Authentication**: Secure JWT-based registration and login system. Distinguishes between Riders and Drivers.
-- **Real-Time Geolocation Matching**: Utilizes MongoDB's `$nearSphere` queries to find the closest online drivers to a rider's pickup location.
-- **Live Ride Tracking**: Powered by Socket.io. Drivers stream mocked (or real device) location data to riders viewing the map.
-- **Dynamic Fare Engine**: Computes distance, base fare, and time metrics to generate consistent ride pricing.
-- **Beautiful UI**: Glassmorphic and modern styling using Tailwind CSS, robust state with Zustand.
+---
 
-## Deployment to Production
-For full production deployment:
-1. Use an established managed MongoDB cluster (MongoDB Atlas) with `2dsphere` indexes enabled on `currentLocation`.
-2. Deploy the `server` to a platform like Heroku, Render, or an AWS EC2 instance. Ensure WebSocket support is enabled on your proxy/load balancer.
-3. Build the Vite application (`npm run build`) and deploy the static assets to Vercel, Netlify, or an S3 bucket.
-4. Set the `VITE_API_URL` and `VITE_SOCKET_URL` in the frontend production environment variables to point to the live backend URL.
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
