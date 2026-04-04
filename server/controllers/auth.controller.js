@@ -3,6 +3,12 @@ const Driver = require('../models/Driver.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+/**
+ * Generates a JSON Web Token for the user
+ * @param {string} id - User ID
+ * @param {string} role - User role (rider/driver)
+ * @returns {string} Signed JWT
+ */
 const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET || 'supersecretjwtkey', {
         expiresIn: '30d',
