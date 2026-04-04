@@ -39,9 +39,10 @@ const connectDB = async () => {
             uri = mongoServer.getUri();
         }
         await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
-        console.log('MongoDB Initialized Successfully');
+        console.log('✅ MongoDB Initialized Successfully');
     } catch (err) {
-        console.log('MongoDB Connection Failed:', err.message);
+        console.error('❌ MongoDB Connection Failed:', err.message);
+        process.exit(1); // Exit on critical failure
     }
 };
 
