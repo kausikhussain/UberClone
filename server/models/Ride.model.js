@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const rideSchema = new mongoose.Schema({
+    /** Reference to the Rider (User) who requested the ride */
     riderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    /** Reference to the Driver assigned to the ride */
     driverId: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver' },
     pickupLocation: {
         address: { type: String, required: true },
