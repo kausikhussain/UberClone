@@ -14,7 +14,7 @@ import Toast from './components/Toast';
 import Footer from './components/Footer';
 
 // Custom PrivateRoute component
-const PrivateRoute = ({ children, roleRequired }) => {
+const PrivateRoute = ({ children, roleRequired }: { children: React.ReactNode, roleRequired?: string }) => {
   const { isAuthenticated, user } = useAuthStore();
 
   if (!isAuthenticated) return <Navigate to="/login" />;
@@ -26,7 +26,7 @@ const PrivateRoute = ({ children, roleRequired }) => {
 };
 
 // Auto route unauthenticated users away from auth pages if logged in
-const AuthRoute = ({ children }) => {
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useAuthStore();
 
   if (isAuthenticated) {

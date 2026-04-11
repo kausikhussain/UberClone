@@ -2,10 +2,25 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { GoogleMap, useLoadScript, MarkerF, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 
 const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
+const libraries = ['places'];
+
+const darkMapStyle = [
+  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+  { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
+  { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
+  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] },
+  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] },
+  { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] }
+];
 
 const Map = ({ pickup, destination, driverLocation, interactive = true }) => {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: googleApiKey,
+        libraries,
     });
 
     const [mapInstance, setMapInstance] = useState(null);
@@ -63,7 +78,7 @@ const Map = ({ pickup, destination, driverLocation, interactive = true }) => {
                     zoom={13}
                     onLoad={onLoad}
                     onUnmount={onUnmount}
-                    options={{ disableDefaultUI: true, zoomControl: interactive, gestureHandling: interactive ? 'auto' : 'none' }}
+                    options={{ disableDefaultUI: true, zoomControl: interactive, gestureHandling: interactive ? 'auto' : 'none', styles: darkMapStyle }}
                 >
                     {pickup && destination && directionsResponse && (
                         <DirectionsRenderer 
