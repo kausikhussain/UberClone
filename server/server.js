@@ -32,8 +32,8 @@ app.use('/api/payment', paymentRoutes);
 const connectDB = async () => {
     try {
         let uri = process.env.MONGO_URI;
-        if (!uri || uri.includes('localhost:27017')) {
-            console.log('Notice: Starting In-Memory MongoDB for seamless local testing...');
+        if (!uri) {
+            console.log('Notice: Starting In-Memory MongoDB for seamless testing since MONGO_URI is missing...');
             const { MongoMemoryServer } = require('mongodb-memory-server');
             const mongoServer = await MongoMemoryServer.create();
             uri = mongoServer.getUri();

@@ -22,7 +22,9 @@ exports.requestRide = async (req, res) => {
 
         // Fallback if frontend didn't send distance
         const calcDistance = distance || getDistance(pickupLocation.coordinates, destination.coordinates);
-        const fare = calculateFare(calcDistance);
+        
+        // If frontend computed fare with surge pricing, respect it safely with a floor minimum
+        const fare = req.body.fare ? Math.max(50, req.body.fare) : calculateFare(calcDistance);
 
         const ride = await Ride.create({
             riderId: req.user.id,
