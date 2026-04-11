@@ -3,7 +3,19 @@ import { persist } from 'zustand/middleware';
 import api from '../services/api';
 import { connectSocket, disconnectSocket } from '../services/socket';
 
-const useAuthStore = create(
+interface AuthStore {
+    user: any;
+    token: string | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
+    login: (email: string, password: string) => Promise<void>;
+    register: (userData: any) => Promise<void>;
+    logout: () => void;
+    clearError: () => void;
+}
+
+const useAuthStore = create<AuthStore>()(
     persist(
         (set, get) => ({
             user: null,
@@ -24,7 +36,7 @@ const useAuthStore = create(
                         isAuthenticated: true,
                         loading: false,
                     });
-                } catch (error) {
+                } catch (error: any) {
                     set({
                         error: error.response?.data?.message || 'Login failed',
                         loading: false,
@@ -44,7 +56,7 @@ const useAuthStore = create(
                         isAuthenticated: true,
                         loading: false,
                     });
-                } catch (error) {
+                } catch (error: any) {
                     set({
                         error: error.response?.data?.message || 'Registration failed',
                         loading: false,
@@ -67,7 +79,6 @@ const useAuthStore = create(
         }),
         {
             name: 'auth-storage',
-            // Optional: onRehydrateStorage
         }
     )
 );

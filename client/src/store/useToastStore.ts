@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 
-const useToastStore = create((set) => ({
+interface Toast {
+    id: number;
+    message: string;
+    type: 'success' | 'error' | 'info';
+}
+
+interface ToastStore {
+    toasts: Toast[];
+    addToast: (message: string, type?: 'success' | 'error' | 'info', duration?: number) => void;
+    removeToast: (id: number) => void;
+}
+
+const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
   addToast: (message, type = 'info', duration = 3000) => {
     const id = Date.now();

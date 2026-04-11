@@ -1,7 +1,19 @@
 import { create } from 'zustand';
 import api from '../services/api';
 
-const useRideStore = create((set, get) => ({
+interface RideStore {
+    currentRide: any;
+    rideHistory: any[];
+    isSearching: boolean;
+    driverLocation: number[] | null;
+    requestRide: (pickupLocation: any, destination: any, distance: string) => Promise<any>;
+    setCurrentRide: (ride: any) => void;
+    setDriverLocation: (location: number[] | null) => void;
+    fetchRideHistory: (role: string) => Promise<void>;
+    clearCurrentRide: () => void;
+}
+
+const useRideStore = create<RideStore>((set, get) => ({
     currentRide: null,
     rideHistory: [],
     isSearching: false,
